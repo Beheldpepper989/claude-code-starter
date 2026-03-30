@@ -1,0 +1,35 @@
+# Claude Code — exclude non-portable and sensitive files
+
+# Session history and cache
+history.jsonl
+shell-snapshots/
+paste-cache/
+cache/
+debug/
+file-history/
+ide/
+mcp-needs-auth-cache.json
+
+# Session files inside projects (exclude session .jsonl files)
+projects/*.jsonl
+projects/*/[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-*.jsonl
+projects/*/*[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f].jsonl
+
+# Project memory (machine-specific, keep local only)
+projects/*/memory/
+
+# Plans, todos, tasks (session-scoped)
+plans/
+todos/
+tasks/
+
+# Backups and plugins
+backups/
+plugins/
+
+# Local-only settings (may contain machine-specific or sensitive config)
+settings.local.json
+
+# Credentials
+.credentials.json
+*.credentials.json
