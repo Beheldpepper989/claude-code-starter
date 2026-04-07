@@ -1,53 +1,67 @@
-# setup.ps1 — First-time install of claude-code-starter on Windows
+# setup.ps1 - First-time install of claude-code-starter on Windows
 # Run from the cloned repo root: .\setup.ps1
 # For subsequent updates use: powershell -File "$env:USERPROFILE\.claude\sync.ps1"
 
+$ErrorActionPreference = "Stop"
 $RepoDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $ClaudeDir = "$env:USERPROFILE\.claude"
 
-Write-Host "[claude-code-starter] Installing to $ClaudeDir"
+Write-Host "[setup] Repo dir:   $RepoDir"
+Write-Host "[setup] Claude dir: $ClaudeDir"
+Write-Host ""
 
-@(
-  "agents", "skills\marketplace", "skills\custom", "templates", "hooks"
-) | ForEach-Object { New-Item -ItemType Directory -Force -Path "$ClaudeDir\$_" | Out-Null }
-
-if (Test-Path "$ClaudeDir\CLAUDE.md") {
-  Write-Host "[claude-code-starter] CLAUDE.md already exists — skipping"
-} else {
-  Copy-Item "$RepoDir\CLAUDE.md" "$ClaudeDir\CLAUDE.md"
-  Write-Host "[claude-code-starter] Installed CLAUDE.md"
+# Create directories
+@("agents", "skills\marketplace", "skills\custom", "templates", "hooks") | ForEach-Object {
+    New-Item -ItemType Directory -Force -Path "$ClaudeDir\$_" | Out-Null
 }
+Write-Host "[setup] Directories created"
 
+# CLAUDE.md - always overwrite on fresh install
+Copy-Item "$RepoDir\CLAUDE.md" "$ClaudeDir\CLAUDE.md" -Force
+Write-Host "[setup] CLAUDE.md installed -> $ClaudeDir\CLAUDE.md"
+
+# settings.json - backup if exists, then install
 if (Test-Path "$ClaudeDir\settings.json") {
-  Copy-Item "$ClaudeDir\settings.json" "$ClaudeDir\settings.json.bak"
-  Write-Host "[claude-code-starter] settings.json already exists — backup saved"
-} else {
-  Copy-Item "$RepoDir\settings.json" "$ClaudeDir\settings.json"
-  Write-Host "[claude-code-starter] Installed settings.json"
+    Copy-Item "$ClaudeDir\settings.json" "$ClaudeDir\settings.json.bak" -Force
+    Write-Host "[setup] settings.json backed up"
 }
+Copy-Item "$RepoDir\settings.json" "$ClaudeDir\settings.json" -Force
+Write-Host "[setup] settings.json installed"
 
-Get-ChildItem "$RepoDir\agents\*.md" | ForEach-Object { Copy-Item $_.FullName "$ClaudeDir\agents\$($_.Name)" -Force }
-Write-Host "[claude-code-starter] Agents installed"
+# Agents
+Get-ChildItem "$RepoDir\agents\*.md" | ForEach-Object {
+    Copy-Item $_.FullName "$ClaudeDir\agents\$($_.Name)" -Force
+}
+Write-Host "[setup] Agents installed"
 
-Get-ChildItem "$RepoDir\skills\marketplace\*.md" | ForEach-Object { Copy-Item $_.FullName "$ClaudeDir\skills\marketplace\$($_.Name)" -Force }
-Get-ChildItem "$RepoDir\skills\custom\*.md" -ErrorAction SilentlyContinue | ForEach-Object { Copy-Item $_.FullName "$ClaudeDir\skills\custom\$($_.Name)" -Force }
-Write-Host "[claude-code-starter] Skills installed"
+# Skills
+Get-ChildItem "$RepoDir\skills\marketplace\*.md" | ForEach-Object {
+    Copy-Item $_.FullName "$ClaudeDir\skills\marketplace\$($_.Name)" -Force
+}
+Get-ChildItem "$RepoDir\skills\custom\*.md" -ErrorAction SilentlyContinue | ForEach-Object {
+    Copy-Item $_.FullName "$ClaudeDir\skills\custom\$($_.Name)" -Force
+}
+Write-Host "[setup] Skills installed"
 
+# Templates
 Get-ChildItem "$RepoDir\templates" -Directory | ForEach-Object {
-  $tDir = "$ClaudeDir\templates\$($_.Name)"
-  New-Item -ItemType Directory -Force -Path $tDir | Out-Null
-  Copy-Item "$($_.FullName)\CLAUDE.md" "$tDir\CLAUDE.md" -Force
+    $tDir = "$ClaudeDir\templates\$($_.Name)"
+    New-Item -ItemType Directory -Force -Path $tDir | Out-Null
+    Copy-Item "$($_.FullName)\CLAUDE.md" "$tDir\CLAUDE.md" -Force
 }
-Write-Host "[claude-code-starter] Templates installed"
+Write-Host "[setup] Templates installed"
 
-Get-ChildItem "$RepoDir\hooks\*.sh" | ForEach-Object { Copy-Item $_.FullName "$ClaudeDir\hooks\$($_.Name)" -Force }
+# Hooks and sync script
+Get-ChildItem "$RepoDir\hooks\*.sh" | ForEach-Object {
+    Copy-Item $_.FullName "$ClaudeDir\hooks\$($_.Name)" -Force
+}
 Copy-Item "$RepoDir\sync.ps1" "$ClaudeDir\sync.ps1" -Force
-Write-Host "[claude-code-starter] Hooks installed"
+Write-Host "[setup] Hooks and sync script installed"
 
 Write-Host ""
-Write-Host "[claude-code-starter] Done."
+Write-Host "[setup] Done. Everything installed to $ClaudeDir"
+Write-Host ""
 Write-Host "Next steps:"
-Write-Host "  1. Edit $ClaudeDir\CLAUDE.md — fill in 'About You' and 'Environments'"
+Write-Host "  1. Open $ClaudeDir\CLAUDE.md and fill in the 'About You' and 'Environments' sections"
 Write-Host "  2. Restart Claude Code"
-$syncPath = $ClaudeDir + "\sync.ps1"
-Write-Host "  3. To sync updates later: powershell -File $syncPath"
+Write-Host "  3. To sync updates later: powershell -File $ClaudeDir\sync.ps1"
