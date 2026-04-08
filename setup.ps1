@@ -3,7 +3,7 @@
 # For subsequent updates use: powershell -File "$env:USERPROFILE\.claude\sync.ps1"
 
 $ErrorActionPreference = "Stop"
-$RepoDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$RepoDir = $PSScriptRoot
 $ClaudeDir = "$env:USERPROFILE\.claude"
 
 Write-Host "[setup] Repo dir:   $RepoDir"
@@ -18,7 +18,7 @@ Write-Host "[setup] Directories created"
 
 # CLAUDE.md - skip if already exists to preserve personalisation
 if (Test-Path "$ClaudeDir\CLAUDE.md") {
-    Write-Host "[setup] CLAUDE.md already exists — skipping"
+    Write-Host "[setup] CLAUDE.md already exists - skipping"
 } else {
     Copy-Item "$RepoDir\CLAUDE.md" "$ClaudeDir\CLAUDE.md" -Force
     Write-Host "[setup] CLAUDE.md installed -> $ClaudeDir\CLAUDE.md"
