@@ -46,6 +46,26 @@
             "timeout": 10
           }
         ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/file-guard.sh",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/file-guard.sh",
+            "timeout": 10
+          }
+        ]
       }
     ],
     "Stop": [
