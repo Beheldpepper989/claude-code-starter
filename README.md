@@ -74,17 +74,19 @@ Everything else in `CLAUDE.md` works out of the box.
 
 ## Syncing updates
 
-To pull the latest agents, skills, hooks, and templates:
+To pull the latest agents, skills, hooks, and templates, run this in your terminal:
 
+**Linux / WSL:**
 ```bash
 bash ~/.claude/sync.sh
 ```
 
-Or from within a Claude session:
+**Windows:**
+```powershell
+powershell -ExecutionPolicy Bypass -File "$env:USERPROFILE\.claude\sync.ps1"
+```
 
-```
-/sync
-```
+> **Note:** `/sync` is not a slash command in Claude Code — typing it will return "unknown skill". Run the script above in your terminal instead. You can also just ask Claude to "sync my config" and it will run the script for you.
 
 Sync never overwrites your `CLAUDE.md`, memory files, or MCP server config — only the shared components get updated.
 
