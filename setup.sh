@@ -33,21 +33,23 @@ else
   echo "[claude-code-starter] Installed settings.json"
 fi
 
-for f in "$REPO_DIR/agents/"*.md; do cp "$f" "$CLAUDE_DIR/agents/$(basename "$f")"; done
+for f in "$REPO_DIR/agents/"*.md; do [ -f "$f" ] && cp "$f" "$CLAUDE_DIR/agents/$(basename "$f")"; done
 echo "[claude-code-starter] Agents installed"
 
-for f in "$REPO_DIR/skills/marketplace/"*.md; do cp "$f" "$CLAUDE_DIR/skills/marketplace/$(basename "$f")"; done
+for f in "$REPO_DIR/skills/marketplace/"*.md; do [ -f "$f" ] && cp "$f" "$CLAUDE_DIR/skills/marketplace/$(basename "$f")"; done
 for f in "$REPO_DIR/skills/custom/"*.md; do [ -f "$f" ] && cp "$f" "$CLAUDE_DIR/skills/custom/$(basename "$f")"; done
 echo "[claude-code-starter] Skills installed"
 
 for d in "$REPO_DIR/templates/"/*/; do
+  [ -d "$d" ] || continue
   tname=$(basename "$d")
   mkdir -p "$CLAUDE_DIR/templates/$tname"
-  cp "$d/CLAUDE.md" "$CLAUDE_DIR/templates/$tname/CLAUDE.md"
+  [ -f "$d/CLAUDE.md" ] && cp "$d/CLAUDE.md" "$CLAUDE_DIR/templates/$tname/CLAUDE.md"
 done
 echo "[claude-code-starter] Templates installed"
 
 for f in "$REPO_DIR/hooks/"*.sh; do
+  [ -f "$f" ] || continue
   cp "$f" "$CLAUDE_DIR/hooks/$(basename "$f")"
   chmod +x "$CLAUDE_DIR/hooks/$(basename "$f")"
 done
