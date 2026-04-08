@@ -10,7 +10,7 @@ A ready-to-go Claude Code setup for IT professionals. Includes a full agent hier
 - **Custom skills** — incident response, runbook builder, network analysis, sysadmin scripts, cloud review
 - **Marketplace skills** — Playwright testing, MCP builder, Claude API, PDF, Word, Excel, PowerPoint, and more
 - **Project templates** — drop a `CLAUDE.md` into any project folder to pre-load the right context
-- **Hooks** — session memory reminders, desktop notifications, bash guard, stop reminders
+- **Hooks** — session memory reminders, desktop notifications, bash guard, file write guard, stop reminders
 - **Sync** — keep your setup current from this repo with one command
 
 ---
@@ -128,6 +128,7 @@ Hooks are shell scripts that Claude Code runs automatically at specific points. 
 | `session-start-compact.sh` | After conversation compaction | Reinjects key context (environment, agent hierarchy, skill list) so Claude doesn't lose its bearings after the conversation is compressed |
 | `notify.sh` | Notification events | Sends a desktop notification when Claude needs your attention. Works on WSL (via `powershell.exe`), Git Bash, and native Linux (`notify-send`) |
 | `bash-guard.sh` | Before any Bash tool call | Blocks a list of dangerous commands (`rm -rf /`, `dd if=...of=/dev/`, `DROP TABLE`, etc.) before they execute |
+| `file-guard.sh` | Before any Edit or Write tool call | Logs all file writes to `~/.claude/logs/file-writes.log`, blocks writes to `~/.ssh/`, and warns when Claude modifies its own config files |
 | `stop.sh` | End of each turn | Reminds Claude to write memory if something worth saving happened this turn |
 
 **What is compaction?** Claude Code automatically compresses long conversations to stay within context limits. When this happens, the `session-start-compact.sh` hook fires to restore the key context Claude needs to keep working correctly.
