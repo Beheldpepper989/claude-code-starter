@@ -1,4 +1,4 @@
-# sync.ps1 — Sync claude-code-starter from GitHub to ~/.claude/
+# sync.ps1 - Sync claude-code-starter from GitHub to ~/.claude/
 # Safe to run any time. Never touches memory or MCP config.
 # Usage: powershell -ExecutionPolicy Bypass -File "$env:USERPROFILE\.claude\sync.ps1"
 
@@ -26,7 +26,7 @@ if (-not (Test-Path "$ClaudeDir\CLAUDE.md")) {
   Copy-Item "$RepoDir\CLAUDE.md" "$ClaudeDir\CLAUDE.md" -Force
   Write-Host "[sync] CLAUDE.md installed (personalize the About You and Environments sections)"
 } else {
-  Write-Host "[sync] CLAUDE.md skipped (already exists — edit manually to pick up upstream changes)"
+  Write-Host "[sync] CLAUDE.md skipped (already exists - edit manually to pick up upstream changes)"
 }
 
 $settingsPath = "$ClaudeDir\settings.json"
@@ -67,7 +67,8 @@ New-Item -ItemType Directory -Force -Path "$ClaudeDir\templates" | Out-Null
 Get-ChildItem "$RepoDir\templates" -Directory | ForEach-Object {
   $tDir = "$ClaudeDir\templates\$($_.Name)"
   New-Item -ItemType Directory -Force -Path $tDir | Out-Null
-  Copy-Item "$($_.FullName)\CLAUDE.md" "$tDir\CLAUDE.md" -Force
+  $src = "$($_.FullName)\CLAUDE.md"
+  if (Test-Path $src) { Copy-Item $src "$tDir\CLAUDE.md" -Force }
 }
 Write-Host "[sync] Templates updated"
 
