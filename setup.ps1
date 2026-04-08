@@ -16,9 +16,13 @@ Write-Host ""
 }
 Write-Host "[setup] Directories created"
 
-# CLAUDE.md - always overwrite on fresh install
-Copy-Item "$RepoDir\CLAUDE.md" "$ClaudeDir\CLAUDE.md" -Force
-Write-Host "[setup] CLAUDE.md installed -> $ClaudeDir\CLAUDE.md"
+# CLAUDE.md - skip if already exists to preserve personalisation
+if (Test-Path "$ClaudeDir\CLAUDE.md") {
+    Write-Host "[setup] CLAUDE.md already exists — skipping"
+} else {
+    Copy-Item "$RepoDir\CLAUDE.md" "$ClaudeDir\CLAUDE.md" -Force
+    Write-Host "[setup] CLAUDE.md installed -> $ClaudeDir\CLAUDE.md"
+}
 
 # settings.json - backup if exists, then install
 if (Test-Path "$ClaudeDir\settings.json") {
@@ -47,7 +51,8 @@ Write-Host "[setup] Skills installed"
 Get-ChildItem "$RepoDir\templates" -Directory | ForEach-Object {
     $tDir = "$ClaudeDir\templates\$($_.Name)"
     New-Item -ItemType Directory -Force -Path $tDir | Out-Null
-    Copy-Item "$($_.FullName)\CLAUDE.md" "$tDir\CLAUDE.md" -Force
+    $src = "$($_.FullName)\CLAUDE.md"
+    if (Test-Path $src) { Copy-Item $src "$tDir\CLAUDE.md" -Force }
 }
 Write-Host "[setup] Templates installed"
 
